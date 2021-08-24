@@ -1,19 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-wget -q https://github.com/davidbrochart/jupyterlab/archive/yjs_awareness.tar.gz -O jlab.tar.gz
-tar zxf jlab.tar.gz
-cd jupyterlab-yjs_awareness
-pip install -e .
-jlpm
-jlpm build
-cd ..
-
 pip install -e .
 
 jupyter labextension develop . --overwrite
-jupyter server extension enable jupyterlab-auth
 jlpm run build
-jupyter server extension list
 jupyter labextension list
 jupyter lab build

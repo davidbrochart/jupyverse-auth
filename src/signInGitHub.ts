@@ -22,14 +22,19 @@ import * as github from '../style/img/github-logo.svg';
  * A namespace for command IDs.
  */
 export namespace CommandIDs {
-  export const github = 'jupyterlab-auth:github';
+  export const github = 'jupyverse-auth:github';
 }
 
 const plugin: JupyterFrontEndPlugin<void> = {
-  id: 'jupyterlab-auth:github',
+  id: 'jupyverse-auth:github',
   autoStart: true,
   requires: [IRouter, IUser, IUserMenu],
-  activate: (app: JupyterFrontEnd, router: IRouter, user: User, menu: Menu): void => {
+  activate: (
+    app: JupyterFrontEnd,
+    router: IRouter,
+    user: User,
+    menu: Menu
+  ): void => {
     const { commands } = app;
 
     const icon = new LabIcon({
@@ -38,22 +43,26 @@ const plugin: JupyterFrontEndPlugin<void> = {
     });
 
     commands.addCommand(CommandIDs.github, {
-      label: "Sign In with GitHub",
+      label: 'Sign In with GitHub',
       icon: icon,
       isEnabled: () => user.isAnonymous,
       //isVisible: () => user.isAnonymous,
       execute: () => {
         const settings = ServerConnection.makeSettings();
-        const requestUrl = URLExt.join(settings.baseUrl, '/auth/github/authorize?authentication_backend=cookie');
+        const requestUrl = URLExt.join(
+          settings.baseUrl,
+          '/auth/github/authorize?authentication_backend=cookie'
+        );
         const init: RequestInit = {
-          method: "GET",
-          headers: {"accept": "application/json"}
+          method: 'GET',
+          headers: { accept: 'application/json' }
         };
-        ServerConnection.makeRequest(requestUrl, init, settings)
-        .then( async resp => {
-          const data = await resp.json();
-          window.location.href = data.authorization_url;
-        });
+        ServerConnection.makeRequest(requestUrl, init, settings).then(
+          async resp => {
+            const data = await resp.json();
+            window.location.href = data.authorization_url;
+          }
+        );
       }
     });
     menu.insertItem(0, { command: CommandIDs.github });

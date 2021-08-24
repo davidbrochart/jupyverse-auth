@@ -4,8 +4,8 @@ node_modules/
 *.egg-info/
 .ipynb_checkpoints
 *.tsbuildinfo
-jupyterlab-auth/labextension
-jupyterlab-auth/config.json
+jupyverse-auth/labextension
+jupyverse-auth/config.json
 
 # Created by https://www.gitignore.io/api/python
 # Edit at https://www.gitignore.io/?templates=python

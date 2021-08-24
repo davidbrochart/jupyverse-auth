@@ -21,13 +21,13 @@ import { IUser, IUserMenu } from './tokens';
 /**
  * A namespace for command IDs.
  */
- export namespace CommandIDs {
-  export const loggedInAs = 'jupyterlab-auth:loggedInAs';
-  export const logout = 'jupyterlab-auth:logout';
+export namespace CommandIDs {
+  export const loggedInAs = 'jupyverse-auth:loggedInAs';
+  export const logout = 'jupyverse-auth:logout';
 }
 
 const menu: JupyterFrontEndPlugin<Menu> = {
-  id: 'jupyterlab-auth:userMenu',
+  id: 'jupyverse-auth:userMenu',
   autoStart: true,
   requires: [IRouter, IUser],
   provides: IUserMenu,
@@ -46,7 +46,7 @@ const menu: JupyterFrontEndPlugin<Menu> = {
       menu.open(window.innerWidth, 30);
     };
 
-    const menu = new Menu({commands});
+    const menu = new Menu({ commands });
     menu.id = 'jp-UserMenu-dropdown';
     menu.title.icon = caretDownIcon;
     menu.title.className = 'jp-UserMenu-dropdown';
@@ -54,19 +54,20 @@ const menu: JupyterFrontEndPlugin<Menu> = {
     menu.addItem({ type: 'separator' });
 
     commands.addCommand(CommandIDs.logout, {
-      label: "Sign Out",
+      label: 'Sign Out',
       isEnabled: () => !user.isAnonymous,
       //isVisible: () => !user.isAnonymous,
       execute: () => {
         const settings = ServerConnection.makeSettings();
         const requestUrl = URLExt.join(settings.baseUrl, 'logout');
         const init: RequestInit = {
-          method: "POST"
+          method: 'POST'
         };
-        ServerConnection.makeRequest(requestUrl, init, settings)
-        .then( async resp => {
-          router.navigate('/', { hard: true });
-        });
+        ServerConnection.makeRequest(requestUrl, init, settings).then(
+          async resp => {
+            router.navigate('/', { hard: true });
+          }
+        );
       }
     });
     menu.addItem({ command: CommandIDs.logout });

@@ -27,19 +27,26 @@ import { User } from './user';
 
 import { getUserIcon } from './components';
 
-import * as userIcon  from '../style/img/user.svg';
+import * as userIcon from '../style/img/user.svg';
 
 const userPanel: JupyterFrontEndPlugin<UserPanel> = {
-  id: 'jupyterlab-auth:userPanel',
+  id: 'jupyverse-auth:userPanel',
   requires: [IUser, IEditorTracker, INotebookTracker],
   autoStart: true,
   provides: IUserPanel,
-  activate: (app: JupyterFrontEnd, user: User, editor: IEditorTracker, notebook: INotebookTracker): UserPanel => {
+  activate: (
+    app: JupyterFrontEnd,
+    user: User,
+    editor: IEditorTracker,
+    notebook: INotebookTracker
+  ): UserPanel => {
     const userPanel = new UserPanel(user);
     app.shell.add(userPanel, 'left', { rank: 300 });
 
-    const collaboratorsChanged = (tracker: IEditorTracker | INotebookTracker) => {
-      if (tracker.currentWidget == null) {
+    const collaboratorsChanged = (
+      tracker: IEditorTracker | INotebookTracker
+    ) => {
+      if (tracker.currentWidget === null) {
         userPanel.collaborators = [];
         return;
       }
@@ -51,7 +58,6 @@ const userPanel: JupyterFrontEndPlugin<UserPanel> = {
         const state = (model.awareness as Awareness).getStates();
         const collaborators: IUser[] = [];
         state.forEach((value, key) => {
-
           const collaborator: IUser = {
             isAnonymous: value.user.isAnonymous,
             id: value.user.id,
@@ -60,18 +66,18 @@ const userPanel: JupyterFrontEndPlugin<UserPanel> = {
             initials: value.user.initials,
             color: value.user.color,
             email: value.user.email,
-            avatar: value.user.avatar,
-          }
-          
+            avatar: value.user.avatar
+          };
+
           collaborators.push(collaborator);
         });
         userPanel.collaborators = collaborators;
-      }
+      };
 
       //@ts-ignore
       (model.awareness as Awareness).on('change', stateChanged);
       stateChanged();
-    }
+    };
 
     notebook.currentChanged.connect(collaboratorsChanged);
     editor.currentChanged.connect(collaboratorsChanged);
@@ -114,17 +120,16 @@ export class UserPanel extends ReactWidget {
     super.onBeforeShow(msg);
     const settings = ServerConnection.makeSettings();
     const requestUrl = URLExt.join(settings.baseUrl, 'auth', 'users');
-    ServerConnection.makeRequest(requestUrl, {}, settings)
-    .then( async resp => {
+    ServerConnection.makeRequest(requestUrl, {}, settings).then(async resp => {
       if (!resp.ok) {
         return;
       }
 
       const data = await resp.json();
       this._users = [];
-      data.forEach( (user: any) => {
+      data.forEach((user: any) => {
         const name = user.name.split(' ');
-        let initials = "";
+        let initials = '';
         if (name.length > 0) {
           initials += name[0].substring(0, 1).toLocaleUpperCase();
         }
@@ -138,13 +143,13 @@ export class UserPanel extends ReactWidget {
           name: user.name,
           username: user.username || user.name,
           initials,
-          color: user.color || "#E0E0E0",
+          color: user.color || '#E0E0E0',
           email: null,
-          avatar: user.avatar,
-        }
+          avatar: user.avatar
+        };
         this._users.push(collaborator);
       });
-			
+
       this.update();
     });
   }
@@ -153,33 +158,30 @@ export class UserPanel extends ReactWidget {
     return (
       <div className="jp-UserPanel">
         <div className="panel-container">
-          { getUserIcon(this._profile) }
-          <span className="panel-username">
-            {this._profile.name}
-          </span>
+          {getUserIcon(this._profile)}
+          <span className="panel-username">{this._profile.name}</span>
         </div>
-        
+
         <h5>Connected users</h5>
-        <hr/>
+        <hr />
         <div className="panel-container">
-          {
-            this._users.map( user => {
-              if (this._profile.id !== user.id) {
-                return getUserIcon(user);
-              }
-            })
-          }
+          {this._users.map(user => {
+            if (this._profile.id !== user.id) {
+              return getUserIcon(user);
+            }
+          })}
         </div>
         <h5>Collaborators</h5>
-        <hr/>
+        <hr />
         <div className="panel-container">
-          {
-            this._collaborators.map( user => {
-              if (this._profile.id !== user.id && this._profile.username !== user.username) {
-                return getUserIcon(user);
-              }
-            })
-          }
+          {this._collaborators.map(user => {
+            if (
+              this._profile.id !== user.id &&
+              this._profile.username !== user.username
+            ) {
+              return getUserIcon(user);
+            }
+          })}
         </div>
       </div>
     );

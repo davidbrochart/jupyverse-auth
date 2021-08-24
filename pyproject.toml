@@ -10,4 +10,4 @@ build_cmd = "build:prod"
 npm = ["jlpm"]
 
 [tool.check-manifest]
-ignore = ["jupyterlab-auth/labextension/**", "yarn.lock", ".*", "package-lock.json"]
+ignore = ["jupyverse-auth/labextension/**", "yarn.lock", ".*", "package-lock.json"]

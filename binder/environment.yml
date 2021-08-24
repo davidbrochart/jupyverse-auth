@@ -1,10 +1,10 @@
-# a mybinder.org-ready environment for demoing jupyterlab-auth
+# a mybinder.org-ready environment for demoing jupyverse-auth
 # this environment may also be used locally on Linux/MacOS/Windows, e.g.
 #
 #   conda env update --file binder/environment.yml
-#   conda activate jupyterlab-auth-demo
+#   conda activate jupyverse-auth-demo
 #
-name: jupyterlab-auth-demo
+name: jupyverse-auth-demo
 
 channels:
   - conda-forge

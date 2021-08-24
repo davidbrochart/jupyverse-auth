@@ -1,12 +1,12 @@
-# jupyterlab-auth
+# jupyverse-auth
 
-![Github Actions Status](https://github.com/davidbrochart/jupyterlab-auth/workflows/Build/badge.svg)
+![Github Actions Status](https://github.com/davidbrochart/jupyverse-auth/workflows/Build/badge.svg)
 
 A JupyterLab extension for authentication.
 
 
-This extension is composed of a Python package named `jupyterlab-auth`
-for the server extension and a NPM package named `jupyterlab-auth`
+This extension is composed of a Python package named `jupyverse-auth`
+for the server extension and a NPM package named `jupyverse-auth`
 for the frontend extension.
 
 
@@ -15,58 +15,39 @@ for the frontend extension.
 To install the extension, execute:
 
 ```bash
-mamba create -n jupyterlab-auth-dev
-conda activate jupyterlab-auth-dev
+mamba create -n jupyverse-auth-dev
+conda activate jupyverse-auth-dev
 mamba install pip nodejs
-
-wget -q https://github.com/jupyterlab/jupyterlab/archive/master.tar.gz -O jlab.tar.gz
-tar zxf jlab.tar.gz
-cd jupyterlab-master
-pip install -e .
-jlpm
-jlpm build
-cd ..
 
 pip install -e .
 jupyter labextension develop . --overwrite
-jupyter server extension enable jupyterlab-auth
 jlpm
 jlpm run build
-jupyter server extension list
-jupyter labextension list
-jupyter lab build
-
-pip install https://github.com/Zsailer/jupyter_server/archive/authorization.zip
-
-jupyter lab --dev-mode --extensions-in-dev-mode --collaborative
 ```
 
 ## Authentication with GitHub
 
-You will need to authorize JupyterLab to access your GitHub information. We only need the
-`read:user` scope, which grants access to read a user's profile data (see the
-[available scopes](https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps#available-scopes)).
-
-You can register a new OAuth application [here](https://github.com/settings/applications/new):
+You will need to authorize JupyterLab to access your GitHub information. You can register a new
+OAuth application [here](https://github.com/settings/applications/new):
 - Application name: JupyterLab
-- Homepage URL: http://localhost:8888
-- Authorization callback URL: http://localhost:8888/auth/github
+- Homepage URL: http://127.0.0.1:8000/lab
+- Authorization callback URL: http://127.0.0.1:8000/auth/github/callback
 
-`localhost` and `8888` are the IP and port number, respectively. You might have to change them
+`127.0.0.1` and `8000` are the IP and port number, respectively. You might have to change them
 according to your particular setup.
 
 This will generate a client ID for you, and you must also generate a client secret.
 
-When navigating to the Jupyter server (either because JupyterLab automatically opens a new tab in
-your browser or by manually going to e.g. http://localhost:8888), you should land to the
-login page, where you can enter your client ID and secret. After authentication, you should be
-allowed access and redirected to JupyterLab.
+When launching jupyverse, you must pass the client ID and secret:
 
-Try opening e.g. http://localhost:8888 in another browser. Here again, you have to provide your
-client ID and secret. It is fine if they are the same as before, you will just be authenticated as
-the same user. You can see the connected users by opening the tab on the left. Also, when you see
-the cursor of another user in a notebook cell, you can place your mouse over it and it should show
-you the user name.
+```bash
+jupyverse --config=path/to/config.toml
+```
 
-You can log out by navigating to e.g. http://localhost:8888/logout, or by clicking on your user
-login in the menu (on the right), and then "Sign out".
+Where `config.toml` looks like this:
+
+```toml
+[authenticator]
+client_id = "your_client_id"
+client_secret = "your_client_secret"
+```

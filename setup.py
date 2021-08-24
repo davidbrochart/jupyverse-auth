@@ -1,5 +1,5 @@
 """
-jupyterlab-auth setup
+jupyverse-auth setup
 """
 import json
 from pathlib import Path
@@ -14,7 +14,7 @@ import setuptools
 HERE = Path(__file__).parent.resolve()
 
 # The name of the project
-name = "jupyterlab-auth"
+name = "jupyverse-auth"
 
 lab_path = (HERE / name / "labextension")
 
@@ -24,15 +24,15 @@ ensured_targets = [
     str(lab_path / "static/style.js")
 ]
 
-labext_name = "jupyterlab-auth"
+labext_name = "jupyverse-auth"
 
 data_files_spec = [
     ("share/jupyter/labextensions/%s" % labext_name, str(lab_path), "**"),
     ("share/jupyter/labextensions/%s" % labext_name, str(HERE), "install.json"),
-    ("etc/jupyter/jupyter_server_config.d", "jupyter-config", "jupyterlab-auth.json"),
+    ("etc/jupyter/jupyter_server_config.d", "jupyter-config", "jupyverse-auth.json"),
     # For backward compatibility with notebook server
     ("etc/jupyter/jupyter_notebook_config.d",
-     "jupyter-config/nb-config", "jupyterlab-auth.json"),
+     "jupyter-config/nb-config", "jupyverse-auth.json"),
 ]
 
 post_develop = npm_builder(

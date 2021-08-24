@@ -1,5 +1,5 @@
 {
-  "name": "jupyterlab-auth",
+  "name": "jupyverse-auth",
   "version": "0.1.0",
   "description": "A JupyterLab extension for authentication.",
   "keywords": [
@@ -7,9 +7,9 @@
     "jupyterlab",
     "jupyterlab-extension"
   ],
-  "homepage": "https://github.com/davidbrochart/jupyterlab-auth",
+  "homepage": "https://github.com/davidbrochart/jupyverse-auth",
   "bugs": {
-    "url": "https://github.com/davidbrochart/jupyterlab-auth/issues"
+    "url": "https://github.com/davidbrochart/jupyverse-auth/issues"
   },
   "license": "BSD-3-Clause",
   "author": {
@@ -25,7 +25,7 @@
   "style": "style/index.css",
   "repository": {
     "type": "git",
-    "url": "https://github.com/davidbrochart/jupyterlab-auth.git"
+    "url": "https://github.com/davidbrochart/jupyverse-auth.git"
   },
   "scripts": {
     "build": "jlpm run build:lib && jlpm run build:labextension:dev",
@@ -35,7 +35,7 @@
     "build:lib": "tsc",
     "clean": "jlpm run clean:lib",
     "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
-    "clean:labextension": "rimraf jupyterlab-auth/labextension",
+    "clean:labextension": "rimraf jupyverse-auth/labextension",
     "clean:all": "jlpm run clean:lib && jlpm run clean:labextension",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
@@ -89,12 +89,12 @@
           "pip"
         ],
         "base": {
-          "name": "jupyterlab-auth"
+          "name": "jupyverse-auth"
         }
       }
     },
     "extension": true,
-    "outputDir": "jupyterlab-auth/labextension",
+    "outputDir": "jupyverse-auth/labextension",
     "disabledExtensions": [
       "@jupyterlab/docprovider-extension"
     ]

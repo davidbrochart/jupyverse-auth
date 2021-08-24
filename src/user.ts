@@ -25,11 +25,11 @@ import { UserNameInput } from './components';
  * A namespace for command IDs.
  */
 export namespace CommandIDs {
-  export const login = 'jupyterlab-auth:login';
+  export const login = 'jupyverse-auth:login';
 }
 
 const user: JupyterFrontEndPlugin<User> = {
-  id: 'jupyterlab-auth:user',
+  id: 'jupyverse-auth:user',
   autoStart: true,
   requires: [IRouter],
   provides: IUser,
@@ -45,46 +45,52 @@ const user: JupyterFrontEndPlugin<User> = {
             title: 'Anonymous username',
             body,
             hasClose: false,
-            buttons: [Dialog.okButton({
-              label: "Send"
-            })]
+            buttons: [
+              Dialog.okButton({
+                label: 'Send'
+              })
+            ]
           });
           dialog.node.onclick = (event: MouseEvent) => {
             event.preventDefault();
             event.stopImmediatePropagation();
           };
-          dialog.launch().then( data => {
+          dialog.launch().then(data => {
             if (data.button.accept) {
               const settings = ServerConnection.makeSettings();
               const requestUrl = URLExt.join(settings.baseUrl, 'register');
               const init: RequestInit = {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  email: data.value.replace(' ', '_') + "@foo.com",
+                  email: data.value.replace(' ', '_') + '@foo.com',
                   username: data.value,
                   password: 'bar',
                   name: data.value,
-                  color: user.color,
+                  color: user.color
                 })
               };
-              ServerConnection.makeRequest(requestUrl, init, settings)
-              .then( async resp => {
+              ServerConnection.makeRequest(requestUrl, init, settings).then(
+                async resp => {
                   const settings = ServerConnection.makeSettings();
                   const requestUrl = URLExt.join(settings.baseUrl, 'login');
                   const init: RequestInit = {
-                    method: "POST",
-                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded'
+                    },
                     body: new URLSearchParams({
-                      username: data.value.replace(' ', '_') + "@foo.com",
+                      username: data.value.replace(' ', '_') + '@foo.com',
                       password: 'bar'
                     })
                   };
-                  ServerConnection.makeRequest(requestUrl, init, settings)
-                  .then( async resp => {
-                    user.update();
-                  });
-              });
+                  ServerConnection.makeRequest(requestUrl, init, settings).then(
+                    async resp => {
+                      user.update();
+                    }
+                  );
+                }
+              );
             }
           });
         }
@@ -111,14 +117,14 @@ export class User implements IUser {
   private _email?: string;
   private _avatar?: string;
 
-  private _isAnonymous: boolean = true;
-  private _isReady: boolean = false;
+  private _isAnonymous = true;
+  private _isReady = false;
   private _ready = new Signal<IUser, boolean>(this);
   private _changed = new Signal<IUser, void>(this);
 
   private _logInMethods: string[] = [];
 
-  constructor(){
+  constructor() {
     this._requestUser().then(() => {
       this._ready.emit(this._isReady);
     });
@@ -176,45 +182,46 @@ export class User implements IUser {
     const settings = ServerConnection.makeSettings();
     const requestUrl = URLExt.join(settings.baseUrl, 'auth', 'users', 'me');
     return ServerConnection.makeRequest(requestUrl, {}, settings)
-    .then( async resp => {
-      if (!resp.ok) {
-      this._isReady = false;
-      this._isAnonymous = null;
+      .then(async resp => {
+        if (!resp.ok) {
+          this._isReady = false;
+          this._isAnonymous = null;
 
-      this._id = null;
-      this._name = getAnonymousUserName();
-      this._username = null;
+          this._id = null;
+          this._name = getAnonymousUserName();
+          this._username = null;
 
-        this._initials = null;
+          this._initials = null;
 
-      this._color = null;
-      this._email = null;
-      this._avatar = null
+          this._color = null;
+          this._email = null;
+          this._avatar = null;
 
-      return Promise.resolve();
-      }
+          return Promise.resolve();
+        }
 
-      const data = await resp.json();
-      this._isReady = data.initialized;
-      this._isAnonymous = data.anonymous;
+        const data = await resp.json();
+        this._isReady = data.initialized;
+        this._isAnonymous = data.anonymous;
 
-      this._id = data.id;
-      this._name = data.name || getAnonymousUserName();
-      this._username = data.username || this._name;
+        this._id = data.id;
+        this._name = data.name || getAnonymousUserName();
+        this._username = data.username || this._name;
 
-      const name = this._name.split(' ');
-      if (name.length > 0) {
-        this._initials = name[0].substring(0, 1).toLocaleUpperCase();
-      }
-      if (name.length > 1) {
-        this._initials += name[1].substring(0, 1).toLocaleUpperCase();
-      }
+        const name = this._name.split(' ');
+        if (name.length > 0) {
+          this._initials = name[0].substring(0, 1).toLocaleUpperCase();
+        }
+        if (name.length > 1) {
+          this._initials += name[1].substring(0, 1).toLocaleUpperCase();
+        }
 
-      this._color = data.color || getRandomColor();
-      this._email = data.email;
-      this._avatar = data.avatar;
+        this._color = data.color || getRandomColor();
+        this._email = data.email;
+        this._avatar = data.avatar;
 
-      return Promise.resolve();
-    }).catch( err => console.error(err) )
+        return Promise.resolve();
+      })
+      .catch(err => console.error(err));
   }
 }
